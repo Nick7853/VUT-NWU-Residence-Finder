@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VUT/NWU Residence Finder — Private Accommodation Directory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Find verified private student residences near VUT and NWU, and list your property to thousands of students.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16233A;
+    --ink-2:#223350;
+    --gold:#B4863B;
+    --gold-dark:#8F6A2C;
+    --paper:#F6F3EC;
+    --card:#FFFFFF;
+    --line:#E3DFD4;
+    --text:#26303F;
+    --muted:#616B7A;
+    --radius:4px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:88px;}
+  body{
+    margin:0; background:var(--paper); color:var(--text);
+    font-family:"Inter",system-ui,-apple-system,Segoe UI,sans-serif;
+    line-height:1.55;
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif; margin:0; color:var(--ink); font-weight:600;}
+  a{color:inherit;}
+  img{max-width:100%;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+
+  /* Nav */
+  header.site{
+    position:sticky; top:0; z-index:20;
+    background:var(--ink); border-bottom:3px solid var(--gold);
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  .navbar{display:flex; align-items:center; justify-content:space-between; padding:16px 32px; max-width:1180px; margin:0 auto;}
+  .brand{display:flex; align-items:baseline; gap:8px; color:#fff; text-decoration:none;}
+  .brand .mark{font-family:"Fraunces",serif; font-size:24px; font-weight:700; letter-spacing:.2px;}
+  .brand .sub{font-size:12px; color:#C7CEDA; font-weight:500;}
+  nav.links{display:flex; gap:28px; flex-wrap:wrap;}
+  nav.links a{color:#DDE2EA; text-decoration:none; font-size:14.5px; font-weight:500; padding:6px 0; border-bottom:2px solid transparent;}
+  nav.links a:hover{color:#fff; border-bottom-color:var(--gold);}
+  .btn{
+    display:inline-block; background:var(--gold); color:#1A1204; text-decoration:none;
+    padding:11px 22px; border-radius:var(--radius); font-weight:600; font-size:14.5px;
+    border:1px solid var(--gold-dark); cursor:pointer;
+  }
+  .btn:hover{background:var(--gold-dark); color:#fff;}
+  .btn.ghost{background:transparent; color:#fff; border:1px solid #45536E;}
+  .btn.ghost:hover{border-color:var(--gold); color:var(--gold);}
+  #menuToggle{display:none; background:none; border:1px solid #45536E; color:#fff; font-size:20px; padding:6px 12px; border-radius:var(--radius);}
+
+  /* Hero */
+  .hero{background:linear-gradient(180deg,var(--ink) 0%, var(--ink-2) 100%); color:#fff; padding:76px 0 68px;}
+  .hero .wrap{display:grid; grid-template-columns:1.15fr .85fr; gap:48px; align-items:center;}
+  .eyebrow{color:var(--gold); font-weight:600; font-size:14.5px; margin-bottom:14px;}
+  .hero h1{font-size:44px; line-height:1.12; max-width:14ch; color:#FFFFFF;}
+  .hero p.lead{color:#C7CEDA; font-size:17px; max-width:46ch; margin-top:18px;}
+  .hero .ctas{display:flex; gap:14px; margin-top:30px; flex-wrap:wrap;}
+  .stat-panel{background:rgba(255,255,255,0.05); border:1px solid #34435F; border-radius:var(--radius); padding:26px;}
+  .stat-panel .row{display:flex; justify-content:space-between; padding:14px 0; border-bottom:1px solid #2C3B55;}
+  .stat-panel .row:last-child{border-bottom:none;}
+  .stat-panel .num{font-family:"Fraunces",serif; font-size:26px; color:var(--gold);}
+  .stat-panel .label{color:#AEB7C6; font-size:13.5px; max-width:16ch; text-align:right;}
+
+  /* Area sections */
+  section.area{padding:64px 0; border-bottom:1px solid var(--line);}
+  section.area:nth-of-type(even){background:#F0ECE1;}
+  .area-head{display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:34px; flex-wrap:wrap;}
+  .area-head h2{font-size:30px;}
+  .area-head .tag{color:var(--gold-dark); font-weight:600; font-size:13.5px; margin-bottom:6px; display:block;}
+  .area-head p{color:var(--muted); max-width:44ch; margin-top:6px;}
+
+  .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; display:flex; flex-direction:column;}
+  .thumb{
+    height:150px; position:relative;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 18px),
+      linear-gradient(135deg, var(--ink) 0%, var(--gold-dark) 130%);
+    display:flex; align-items:flex-end; padding:14px 16px; color:#fff;
+  }
+  .thumb .thumb-label{font-family:"Fraunces",serif; font-size:15px; font-weight:600; opacity:.92;}
+  .card .body{padding:18px 18px 20px; flex:1; display:flex; flex-direction:column;}
+  .card h3{font-size:18px; margin-bottom:4px;}
+  .card .addr{color:var(--gold-dark); font-size:13px; font-weight:600; margin-bottom:10px;}
+  .card p.desc{color:var(--muted); font-size:14px; margin:0 0 16px; flex:1;}
+  .card .meta{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+  .chip{font-size:11.5px; color:var(--ink-2); background:#EDE7D8; border:1px solid var(--line); border-radius:20px; padding:3px 10px;}
+  .card .view{font-size:14px; font-weight:600; color:var(--ink); text-decoration:none; border-top:1px solid var(--line); padding-top:14px;}
+  .card .view:hover{color:var(--gold-dark);}
+  .card .view:after{content:" →";}
+
+  /* Landlords */
+  section.landlords{background:var(--ink); color:#fff; padding:70px 0;}
+  section.landlords .wrap{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;}
+  section.landlords h2{color:#fff; font-size:30px; max-width:14ch;}
+  section.landlords p{color:#C7CEDA; margin-top:14px; max-width:48ch;}
+  .steps{list-style:none; margin:26px 0 0; padding:0; display:grid; gap:14px;}
+  .steps li{display:flex; gap:14px; align-items:flex-start; color:#DDE2EA; font-size:14.5px;}
+  .steps li .dot{width:8px; height:8px; border-radius:50%; background:var(--gold); margin-top:7px; flex:none;}
+  .landlord-card{background:#1E2E48; border:1px solid #34435F; border-radius:var(--radius); padding:30px;}
+  .landlord-card h3{color:#fff; font-size:19px; margin-bottom:6px;}
+  .landlord-card p{color:#AEB7C6; font-size:14px; margin-bottom:20px;}
+
+  /* Contact */
+  section.contact{padding:70px 0;}
+  .contact-grid{display:grid; grid-template-columns:1fr 1fr; gap:56px;}
+  .contact-head .tag{color:var(--gold-dark); font-weight:600; font-size:13.5px;}
+  .contact-head h2{font-size:30px; margin-top:6px;}
+  .contact-head p{color:var(--muted); margin-top:12px; max-width:40ch;}
+  form{display:grid; gap:16px; margin-top:26px;}
+  .field label{display:block; font-size:13px; font-weight:600; color:var(--ink-2); margin-bottom:6px;}
+  .field input, .field select, .field textarea{
+    width:100%; border:1px solid var(--line); border-radius:var(--radius); padding:11px 12px;
+    font-family:inherit; font-size:14.5px; background:#fff; color:var(--text);
+  }
+  .field textarea{min-height:96px; resize:vertical;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+
+  /* Success Message Styling */
+  .success-message {
+    display: none;
+    background: #EAF4EA;
+    color: #1E5023;
+    border: 1px solid #B8E0B9;
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 14.5px;
+    margin-top: 20px;
+    line-height: 1.5;
+  }
+
+  footer{background:var(--ink-2); color:#AEB7C6; padding:34px 0; padding-bottom:calc(34px + env(safe-area-inset-bottom,0px));}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; font-size:13.5px;}
+  footer a{color:#DDE2EA; text-decoration:none;}
+
+  @media (max-width:880px){
+    nav.links{display:none;}
+    #menuToggle{display:inline-block;}
+    .hero .wrap, section.landlords .wrap, .contact-grid{grid-template-columns:1fr;}
+    .grid{grid-template-columns:1fr 1fr;}
+    .stat-panel .row{align-items:flex-start;}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 20px;}
+    .grid{grid-template-columns:1fr;}
+    .hero h1{font-size:32px;}
+    .two-col{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="navbar">
+    <a href="#top" class="brand"><span class="mark">VUT/NWU</span><span class="sub">Residence&nbsp;Finder</span></a>
+    <nav class="links">
+      <a href="#bedworth">Bedworth Park</a>
+      <a href="#kollege">Kollege Park</a>
+      <a href="#se7">Vanderbijlpark S.E.7</a>
+      <a href="#town">Town</a>
+      <a href="#landlords">List a Property</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button id="menuToggle" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">VUT &amp; NWU · Vanderbijlpark · Vereeniging</div>
+        <h1>Find your next academic home, without the guesswork</h1>
+        <p class="lead">A single, up-to-date directory of private student residences around campus — so you can compare, shortlist and contact landlords directly, in one place.</p>
+        <div class="ctas">
+          <a href="#bedworth" class="btn">Browse residences</a>
+          <a href="#landlords" class="btn ghost">I'm a landlord</a>
+        </div>
+      </div>
+      <div class="stat-panel">
+        <div class="row"><span class="num">4</span><span class="label">areas covered around campus</span></div>
+        <div class="row"><span class="num">30+</span><span class="label">verified residences listed</span></div>
+        <div class="row"><span class="num">2</span><span class="label">campuses served — VUT &amp; NWU</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="area" id="bedworth">
+    <div class="wrap">
+      <div class="area-head">
+        <div>
+          <span class="tag">AREA</span>
+          <h2>Bedworth Park</h2>
+          <p>The most lively student town in the Vaal — walking distance to campus, restaurants and social life.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">25 Cassandra Ave</span></div>
+          <div class="body">
+            <h3>Cassandra Residence</h3>
+            <div class="addr">25 Cassandra Avenue, Bedworth Park</div>
+            <p class="desc">Modern single en-suite rooms, built for comfort and convenience close to campus.</p>
+            <div class="meta"><span class="chip">En-suite</span><span class="chip">NSFAS accredited</span><span class="chip">24/7 security</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">14 Reitz Street</span></div>
+          <div class="body">
+            <h3>Reitz Street Residence</h3>
+            <div class="addr">14 Reitz Street, Bedworth Park</div>
+            <p class="desc">Shared and single rooms with a communal study area and backup power.</p>
+            <div class="meta"><span class="chip">Wi-Fi</span><span class="chip">Backup power</span><span class="chip">CCTV</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">8 Kingfisher Rd</span></div>
+          <div class="body">
+            <h3>Kingfisher House</h3>
+            <div class="addr">8 Kingfisher Road, Bedworth Park</div>
+            <p class="desc">Quiet, secure residence with on-site laundry and a fenced perimeter.</p>
+            <div class="meta"><span class="chip">Laundry</span><span class="chip">Electric fence</span><span class="chip">Cleaning</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="area" id="kollege">
+    <div class="wrap">
+      <div class="area-head">
+        <div>
+          <span class="tag">AREA</span>
+          <h2>Kollege Park</h2>
+          <p>A quiet, residential neighbourhood popular with postgraduate and senior students.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">6 Meyer Street</span></div>
+          <div class="body">
+            <h3>Meyer Street Residence</h3>
+            <div class="addr">6 Meyer Street, Kollege Park</div>
+            <p class="desc">Fully furnished apartments with a biometric access system and fibre Wi-Fi.</p>
+            <div class="meta"><span class="chip">Fibre Wi-Fi</span><span class="chip">Biometric access</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">19 Louise Ave</span></div>
+          <div class="body">
+            <h3>Louise Avenue Residence</h3>
+            <div class="addr">19 Louise Avenue, Kollege Park</div>
+            <p class="desc">Spacious rooms with private bathrooms, a shared kitchen and a quiet study wing.</p>
+            <div class="meta"><span class="chip">Private bath</span><span class="chip">Study wing</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">3 Kollege Ln</span></div>
+          <div class="body">
+            <h3>Kollege Lane House</h3>
+            <div class="addr">3 Kollege Lane, Kollege Park</div>
+            <p class="desc">Small, tight-knit residence with solar backup and a shared braai area.</p>
+            <div class="meta"><span class="chip">Solar backup</span><span class="chip">Braai area</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="area" id="se7">
+    <div class="wrap">
+      <div class="area-head">
+        <div>
+          <span class="tag">AREA</span>
+          <h2>Vanderbijlpark S.E. 7</h2>
+          <p>The most accessible part of town for VUT students — short walk or lift to campus gates.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">SE7 — Block A</span></div>
+          <div class="body">
+            <h3>SE7 Student Village</h3>
+            <div class="addr">12 Klipbank Street, S.E. 7</div>
+            <p class="desc">Purpose-built student village with a shuttle to campus and 24-hour security.</p>
+            <div class="meta"><span class="chip">Shuttle service</span><span class="chip">24/7 security</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">SE7 — Riverview</span></div>
+          <div class="body">
+            <h3>Riverview Residence</h3>
+            <div class="addr">27 Vaal Drive, S.E. 7</div>
+            <p class="desc">Riverside residence with communal TV room and a dedicated cleaning service.</p>
+            <div class="meta"><span class="chip">TV room</span><span class="chip">Cleaning service</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">SE7 — Oakridge</span></div>
+          <div class="body">
+            <h3>Oakridge House</h3>
+            <div class="addr">9 Oak Street, S.E. 7</div>
+            <p class="desc">Affordable shared rooms with strong fibre and a fenced parking area.</p>
+            <div class="meta"><span class="chip">Fibre Wi-Fi</span><span class="chip">Secure parking</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="area" id="town">
+    <div class="wrap">
+      <div class="area-head">
+        <div>
+          <span class="tag">AREA</span>
+          <h2>Vanderbijlpark Town</h2>
+          <p>Right in the heart of town — walking distance to shops, banks and everything else.</p>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">Town — Central</span></div>
+          <div class="body">
+            <h3>Central Plaza Residence</h3>
+            <div class="addr">4 President Street, Town Centre</div>
+            <p class="desc">City-centre residence above retail level, with lift access and CCTV throughout.</p>
+            <div class="meta"><span class="chip">Lift access</span><span class="chip">CCTV</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">Town — Market St</span></div>
+          <div class="body">
+            <h3>Market Street Residence</h3>
+            <div class="addr">21 Market Street, Town Centre</div>
+            <p class="desc">Budget-friendly rooms a short walk from campus shuttle stops and the mall.</p>
+            <div class="meta"><span class="chip">Budget friendly</span><span class="chip">Near shuttle</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="thumb"><span class="thumb-label">Town — Parkview</span></div>
+          <div class="body">
+            <h3>Parkview Residence</h3>
+            <div class="addr">33 Park Road, Town Centre</div>
+            <p class="desc">Renovated house with private rooms, a study lounge and on-site management.</p>
+            <div class="meta"><span class="chip">Study lounge</span><span class="chip">On-site manager</span></div>
+            <a href="#" class="view">View residence</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="landlords" id="landlords">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">FOR PROPERTY OWNERS</span>
+        <h2>Get your residence in front of students actively searching</h2>
+        <p>VUT/NWU Residence Finder is the first place students look before signing a lease. A listing puts your rooms, photos and contact details directly in front of them.</p>
+        <ul class="steps">
+          <li><span class="dot"></span>Send us your residence details, photos and amenities.</li>
+          <li><span class="dot"></span>We publish it under the correct area, ready to browse.</li>
+          <li><span class="dot"></span>Students contact you directly to view and apply.</li>
+        </ul>
+      </div>
+      <div class="landlord-card">
+        <h3>List your residence</h3>
+        <p>Tell us a bit about your property and we'll get back to you about featuring it in the directory.</p>
+        <a href="#contact" class="btn">Get started</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-head">
+        <span class="tag">GET IN TOUCH</span>
+        <h2>Contact us</h2>
+        <p>Whether you're a student looking for a place, or a landlord wanting to list one — send us a message and we'll get back to you shortly.</p>
+      </div>
+      <div>
+        <form id="contactForm" action="https://formsubmit.co/khayostevens04@gmail.com" method="POST">
+          <!-- FormSubmit Configuration Settings -->
+          <input type="hidden" name="_captcha" value="false">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_subject" value="New Website Message - VUT/NWU Residence Finder">
+
+          <div class="two-col">
+            <div class="field"><label>Full name</label><input type="text" name="Full Name" required></div>
+            <div class="field"><label>Phone number</label><input type="tel" name="Phone Number" required></div>
+          </div>
+          <div class="field"><label>Email</label><input type="email" name="Email" required></div>
+          <div class="two-col">
+            <div class="field">
+              <label>I am a</label>
+              <select name="User Type" required>
+                <option value="">Select one</option>
+                <option value="Student">Student</option>
+                <option value="Residence owner / landlord">Residence owner / landlord</option>
+              </select>
+            </div>
+            <div class="field"><label>University</label><input type="text" name="University" placeholder="VUT / NWU"></div>
+          </div>
+          <div class="field"><label>Message</label><textarea name="Message" required></textarea></div>
+          <button type="submit" class="btn" style="justify-self:start;">Send message</button>
+        </form>
+
+        <div id="successMsg" class="success-message">
+          <strong>Thank you! Your message has been sent successfully.</strong><br>
+          We have received your enquiry and will get back to you shortly.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 VUT/NWU Residence Finder — Vanderbijlpark & Vereeniging, South Africa</span>
+    <span><a href="#landlords">List your residence</a> · <a href="#contact">Contact</a></span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = this;
+
+    // Send email using FormSubmit API
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: {
+        'Accept': 'application/json'
+      }
+    }).then(response => {
+      // Show confirmation message on screen
+      document.getElementById('successMsg').style.display = 'block';
+      form.reset();
+    }).catch(error => {
+      alert('There was an issue sending your message. Please try again.');
+    });
+  });
+</script>
+
+</body>
+</html>
